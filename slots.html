@@ -110,7 +110,7 @@
 
         <button class="spin-button" id="spinButton" onclick="spinSlots()">SPIN</button>
 
-        <div class="credits" id="credits">Chips: 100 💰</div>
+        <div class="credits" id="credits">Chips: 100</div>
         <div class="result" id="result"></div>
     </div>
 
@@ -120,7 +120,7 @@
 
         // Update the display of chips
         function updateChips() {
-            document.getElementById('credits').textContent = `Chips: ${chips} 💰`;
+            document.getElementById('credits').textContent = `Chips: ${chips}`;
         }
 
         // Save chip balance to localStorage

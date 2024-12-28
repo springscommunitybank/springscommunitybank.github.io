@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #1a1a1a;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        padding-top: 200px;
+        padding-bottom: 200px;
+    }
+
+    .home-container {
+        background: radial-gradient(circle, #660000, #330000);
+        border: 5px solid #ff3333;
+        border-radius: 20px;
+        width: 90%;
+        max-width: 800px;
+        padding: 40px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.8);
+        text-align: center;
+    }
+
+    .title {
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        text-shadow: 0 0 10px #ff3333;
+    }
+
+    .chip-amount {
+        font-size: 2em;
+        margin-top: 20px;
+        color: #ffcc00;
+        text-shadow: 0 0 15px #ffcc00;
+        font-weight: bold;
+    }
+
+    .game-options-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* 2 columns */
+        gap: 20px;
+        margin-bottom: 30px;
+        justify-items: center; /* Centers the buttons */
+    }
+
+    .game-option {
+        position: relative;
+        background-color: #222;
+        margin: 15px;
+        border-radius: 50%;
+        width: 260px; /* 1.75 times bigger */
+        height: 260px; /* 1.75 times bigger */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 7em; /* 1.75 times bigger font size */
+        transition: transform 0.3s, box-shadow 0.3s;
+        cursor: pointer;
+        overflow: hidden;
+        text-align: center;
+        line-height: 1.2em;
+    }
+
+    .game-option::after {
+        content: attr(data-game);
+        position: absolute;
+        opacity: 0;
+        color: white;
+        font-size: .4em;
+        font-weight: bold;
+        transition: opacity 0.3s ease;
+    }
+
+    .game-option.spades {
+        color: black;
+    }
+    .game-option.spades:hover {
+        box-shadow: 0 0 20px red;
+    }
+
+    .game-option.hearts {
+        color: red;
+    }
+    .game-option.hearts:hover {
+        box-shadow: 0 0 20px black;
+    }
+
+    .game-option.clubs {
+        color: black;
+    }
+    .game-option.clubs:hover {
+        box-shadow: 0 0 20px red;
+    }
+
+    .game-option.diamonds {
+        color: red;
+    }
+    .game-option.diamonds:hover {
+        box-shadow: 0 0 20px black;
+    }
+
+    .game-option:hover::after {
+        opacity: 1;
+    }
+
+    .chip-shop {
+        background: #444;
+        border-radius: 10px;
+        text-align: center;
+        color: white;
+        padding: 20px;
+        margin: 20px auto;
+        width: 90%;
+        max-width: 600px;
+        cursor: pointer;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .chip-shop:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+    }
+    </style>
+</head>
+<body>
+    <div class="home-container">
+        <div class="title">🎰 Welcome to the Casino! 🎰</div>
+        <div class="chip-amount" id="chipAmount">Chips: $1000</div> <!-- Displaying current chip amount -->
+
+        <div class="game-options-container">
+            <div class="game-option spades" data-game="Slots" onclick="openPopup('slots')">
+                <span>♠</span>
+            </div>
+            <div class="game-option hearts" data-game="Blackjack" onclick="openPopup('blackjack')">
+                <span>♥</span>
+            </div>
+            <div class="game-option diamonds" data-game="Roulette" onclick="openPopup('roulette')">
+                <span>♦</span>
+            </div>
+            <div class="game-option clubs" data-game="Poker" onclick="openPopup('poker')">
+                <span>♣</span>
+            </div>
+        </div>
+
+        <div class="chip-shop" onclick="buyChips()">
+            <h2>Chip Shop</h2>
+            <p>Buy more chips to keep the fun going!</p>
+        </div>
+    </div>
+
+    <script>
+        // Initialize chip amount on page load
+        window.onload = function() {
+            let chipAmount = localStorage.getItem('chipAmount');
+            if (chipAmount) {
+                document.getElementById('chipAmount').textContent = `Chips: $${chipAmount}`;
+            } else {
+                // Set default chip amount if not found in localStorage
+                localStorage.setItem('chipAmount', 1000);
+                document.getElementById('chipAmount').textContent = 'Chips: $1000';
+            }
+        }
+
+        // Function to buy chips (updates chip amount)
+        function buyChips() {
+            let currentChips = parseInt(localStorage.getItem('chipAmount'));
+            let newChips = currentChips + 100; // Example: Add 100 chips to current amount
+            localStorage.setItem('chipAmount', newChips); // Save updated chip amount
+            document.getElementById('chipAmount').textContent = `Chips: $${newChips}`;
+        }
+
+        // Placeholder function for opening game popups
+        function openPopup(game) {
+            alert(`Open the ${game} page!`);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slots</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1a1a1a;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .slot-machine-container {
+            background: radial-gradient(circle, #660000, #330000);
+            border: 5px solid #ff3333;
+            border-radius: 20px;
+            width: 350px;
+            height: 500px;
+            padding: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.8);
+            text-align: center;
+        }
+
+        .title {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #ff3333;
+        }
+
+        .slot-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: black;
+            border: 3px solid #ff3333;
+            border-radius: 10px;
+            height: 200px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .slot {
+            width: 80px;
+            height: 80px;
+            margin: 0 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: white;
+            border-radius: 10px;
+            font-size: 60px;
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .spin-button {
+            background: #ff3333;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .spin-button:hover {
+            background-color: #cc0000;
+        }
+
+        .credits {
+    margin-top: 20px;
+    font-size: 2em; /* Larger font size */
+    font-weight: bold; /* Make the font bold */
+    text-shadow: 0 0 10px #ff3333, 0 0 20px #ff3333, 0 0 30px #ff3333; /* Glowing effect */
+    color: #ffcc00; /* Bright yellow color for chips */
+    font-family: 'Arial', sans-serif; /* Ensure it's a clean font */
+    letter-spacing: 2px; /* Add some space between the letters */
+}
+
+
+        .result {
+            font-size: 1em;
+            margin-top: 10px;
+            text-shadow: 0 0 10px #ff0000;
+        }
+
+        .disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="slot-machine-container">
+        <div class="title">🎰 Slot Machine 🎰</div>
+
+        <div class="slot-display">
+            <div class="slot" id="slot1">🍋</div>
+            <div class="slot" id="slot2">🍉</div>
+            <div class="slot" id="slot3">🔔</div>
+        </div>
+
+        <button class="spin-button" id="spinButton" onclick="spinSlots()">SPIN</button>
+
+        <div class="credits" id="credits">Chips: 100 💰</div>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        // Initialize chip balance from localStorage or set to 100 if not present
+        let chips = parseInt(localStorage.getItem('chipAmount')) || 1000; 
+
+        // Update the display of chips
+        function updateChips() {
+            document.getElementById('credits').textContent = `Chips: ${chips} 💰`;
+        }
+
+        // Save chip balance to localStorage
+        function saveChips() {
+            localStorage.setItem('chips', chips);
+        }
+
+        function spinSlots() {
+            const slotSymbols = ['🍋', '🍉', '🍇', '🔔', '7️⃣'];
+            const randomIndex = () => Math.floor(Math.random() * slotSymbols.length);
+
+            // Deduct 5 chips per spin
+            if (chips >= 5) {
+                chips -= 5;
+                updateChips();
+            } else {
+                document.getElementById('result').textContent = "💥 Not enough Chips! 💥";
+                return; // Exit the function if there are not enough chips
+            }
+
+            // Disable spin button during animation
+            const spinButton = document.getElementById('spinButton');
+            spinButton.classList.add('disabled');
+
+            // Get slot elements
+            const slot1 = document.getElementById('slot1');
+            const slot2 = document.getElementById('slot2');
+            const slot3 = document.getElementById('slot3');
+
+            // Randomize results
+            const result1 = slotSymbols[randomIndex()];
+            const result2 = slotSymbols[randomIndex()];
+            const result3 = slotSymbols[randomIndex()];
+
+            // Apply flipping animation and change content halfway
+            setTimeout(() => slot1.style.transform = "rotateX(180deg)", 0);
+            setTimeout(() => slot1.textContent = result1, 250);
+            setTimeout(() => slot1.style.transform = "rotateX(0deg)", 500);
+
+            setTimeout(() => slot2.style.transform = "rotateX(180deg)", 100);
+            setTimeout(() => slot2.textContent = result2, 350);
+            setTimeout(() => slot2.style.transform = "rotateX(0deg)", 600);
+
+            setTimeout(() => slot3.style.transform = "rotateX(180deg)", 200);
+            setTimeout(() => slot3.textContent = result3, 450);
+            setTimeout(() => slot3.style.transform = "rotateX(0deg)", 700);
+
+            // Check result and update display
+            setTimeout(() => {
+                const result = checkResult(result1, result2, result3);
+                if (result === "win") {
+                    chips += 20; // Win reward
+                    document.getElementById('result').textContent = "🎉 You Win! 🎉";
+                } else if (result === "lose") {
+                    document.getElementById('result').textContent = "💥 Out of Chips! 💥";
+                } else {
+                    document.getElementById('result').textContent = " ";
+                }
+
+                updateChips();
+                saveChips(); // Save new chip balance to localStorage
+
+                // Enable spin button after animation
+                spinButton.classList.remove('disabled');
+            }, 800);
+        }
+
+        function checkResult(symbol1, symbol2, symbol3) {
+            if (symbol1 === symbol2 && symbol2 === symbol3) {
+                return "win";
+            } else if (chips <= 0) {
+                document.getElementById('spinButton').disabled = true;
+                return "lose";
+            }
+            return "draw";
+        }
+
+        // Initial chip display
+        updateChips();
+    </script>
+</body>
+</html>
